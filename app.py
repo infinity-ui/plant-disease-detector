@@ -3,6 +3,11 @@ import numpy as np
 from keras.models import load_model
 from PIL import Image
 
+# Constants
+MODEL_PATH = "best_model.h5"
+LABEL_PATH = "class_names.txt"
+IMAGE_SIZE = 64
+
 # Title and description
 st.title("🌿 Plant Disease Detection")
 st.markdown("Upload a plant leaf image and check if it has a disease.")
@@ -16,21 +21,24 @@ if uploaded_file:
     st.image(image, caption="Uploaded Leaf Image", use_column_width=True)
 
     # Preprocess image
-    image = image.resize((224, 224))  # Resize for CNN input
+    image = image.resize((IMAGE_SIZE, IMAGE_SIZE))  # Resize to 64x64
     img_array = np.array(image) / 255.0  # Normalize
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
 
-    # Load model
     try:
-        model = load_model("best_model.h5")
-        predictions = model.predict(img_array)[0]
-        class_names = ["Tomato_Bacterial_spot", "Tomato_Early_blight", "Tomato_Late_blight", "Healthy"]
+        # Load model
+        model = load_model(MODEL_PATH)
 
-        # Get top prediction
+        # Load class names
+        with open(LABEL_PATH, "r") as f:
+            class_names = [line.strip() for line in f.readlines()]
+
+        # Predict
+        predictions = model.predict(img_array)[0]
         predicted_class = class_names[np.argmax(predictions)]
         confidence = np.max(predictions) * 100
 
-        # Show prediction
+        # Show result
         st.markdown(f"🧠 **Prediction:** `{predicted_class}`")
         st.markdown(f"🔍 **Confidence:** `{confidence:.2f}%`")
 
