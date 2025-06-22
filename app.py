@@ -22,7 +22,7 @@ if uploaded_file:
 
     # Load model
     try:
-        model = load_model("model/cnn_model.h5")
+        model = load_model("cnn_model.h5")
         predictions = model.predict(img_array)[0]
         class_names = ["Tomato_Bacterial_spot", "Tomato_Early_blight", "Tomato_Late_blight", "Healthy"]
 
