@@ -9,7 +9,7 @@ MODEL_PATH = "best_model.h5"
 LABEL_PATH = "class_names.txt"
 IMAGE_SIZE = 64
 GROQ_API_KEY = "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"  # Replace this with your key
-GROQ_MODEL = "mixtral-8x7b-32768"  # or try "llama3-70b-8192"
+GROQ_MODEL = "llama3-70b-8192"  # or try "llama3-70b-8192"
 
 # Title
 st.title("🌿 Plant Disease Detection")
