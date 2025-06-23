@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git ''
+                git 'https://github.com/infinity-ui/plant-disease-detector'
             }
         }
 
@@ -19,16 +19,17 @@ pipeline {
             }
         }
 
-        stage('Stop Old Container (if any)') {
+        stage('Stop Old Container') {
             steps {
                 sh 'docker rm -f $CONTAINER_NAME || true'
             }
         }
 
-        stage('Run Streamlit App in Docker') {
+        stage('Run New Container') {
             steps {
                 sh 'docker run -d --name $CONTAINER_NAME -p 8501:8501 $IMAGE_NAME'
             }
         }
     }
 }
+
