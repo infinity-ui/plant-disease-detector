@@ -4,23 +4,29 @@ from keras.models import load_model
 from PIL import Image
 import requests
 
-# Config
+# ----------------------------
+# 🔧 Config
+# ----------------------------
 MODEL_PATH = "best_model.h5"
 LABEL_PATH = "class_names.txt"
 IMAGE_SIZE = 64
-GROQ_API_KEY = "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"  # Replace this with your key
-GROQ_MODEL = "llama3-70b-8192"  # or try "llama3-70b-8192"
+GROQ_API_KEY = "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"  # Replace this with your actual API key
+GROQ_MODEL = "llama3-70b-8192"
 
-# Title
+# ----------------------------
+# 🖼️ Title and Description
+# ----------------------------
 st.title("🌿 Plant Disease Detection")
 st.markdown("Upload a plant leaf image and check if it has a disease.")
 
-# File uploader
+# ----------------------------
+# 📤 File uploader
+# ----------------------------
 uploaded_file = st.file_uploader("Upload Leaf Image", type=["jpg", "jpeg", "png"])
 
 if uploaded_file:
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Leaf", use_column_width=True)
+    st.image(image, caption="Uploaded Leaf", use_container_width=True)
 
     image = image.resize((IMAGE_SIZE, IMAGE_SIZE))
     img_array = np.array(image) / 255.0
@@ -49,17 +55,15 @@ if uploaded_file:
         st.text(str(e))
 
 # ----------------------------
-# 💬 Chatbot Section using Groq
+# 💬 Chatbot Section (Single-Turn)
 # ----------------------------
 st.header("💡 Ask About Plant Diseases")
 st.markdown("Get remedies, treatment options, and care tips.")
 
-# Store chat history in session
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = [{"role": "system", "content": "You are a helpful assistant specialized in plant diseases and remedies."}]
-
+# User input
 user_query = st.text_input("Ask a question (e.g., 'How to treat late blight?')")
 
+# Function to query Groq API
 def query_groq(messages):
     url = "https://api.groq.com/openai/v1/chat/completions"
     headers = {
@@ -78,14 +82,12 @@ def query_groq(messages):
     else:
         return f"❌ Error: {response.text}"
 
+# Only handle one message at a time (no history)
 if user_query:
-    st.session_state.chat_history.append({"role": "user", "content": user_query})
-    reply = query_groq(st.session_state.chat_history)
-    st.session_state.chat_history.append({"role": "assistant", "content": reply})
-
-# Display chat history
-for msg in st.session_state.chat_history[1:]:
-    if msg["role"] == "user":
-        st.markdown(f"**👤 You:** {msg['content']}")
-    else:
-        st.markdown(f"**🤖 Bot:** {msg['content']}")
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant specialized in plant diseases and remedies."},
+        {"role": "user", "content": user_query}
+    ]
+    reply = query_groq(messages)
+    st.markdown(f"**👤 You:** {user_query}")
+    st.markdown(f"**🤖 Bot:** {reply}")
