@@ -10,7 +10,7 @@ import requests
 MODEL_PATH = "best_model.h5"
 LABEL_PATH = "class_names.txt"
 IMAGE_SIZE = 64
-GROQ_API_KEY = "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"  # Replace this with your actual API key
+GROQ_API_KEY = "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"  # Replace this with your actual API key
 GROQ_MODEL = "llama3-70b-8192"
 
 # ----------------------------
